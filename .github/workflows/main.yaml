@@ -1,26 +1,27 @@
-name: Implantacao na AWS, fluxo de CI/CD.
+name: CI para Node.js
 
 on:
   push:
-    branches: 
-      - main
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
 jobs:
-  build:
+  construir:
+
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x]
+
     steps:
-    - name: Fazer checkout do código
-      uses: actions/checkout@v2
-
-    - name: Configurar credenciais da AWS
-      uses: aws-actions/configure-aws-credentials@v1
+    - uses: actions/checkout@v2
+    - name: Usar Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-west-2
-    - name: Implantar no AWS
-      run: |
-        aws s3 sync .s3//meu-bucket    
-
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - run: npm run build --if-present
 
 
