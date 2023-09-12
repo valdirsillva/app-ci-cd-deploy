@@ -20,7 +20,7 @@ jobs:
         aws-region: us-west-2
     - name: Implantar no AWS
       run: |
-      aws s3 sync .s3//meu-bucket    
+        aws s3 sync .s3//meu-bucket    
 
 
 
